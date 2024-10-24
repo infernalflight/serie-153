@@ -23,5 +23,7 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+/public/posters
+/public/backdrops
 
 .idea

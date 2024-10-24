@@ -3,6 +3,13 @@
 {% block title %}Détail de la série n°{{ serie.id }}{% endblock %}
 
 {% block body %}
+    <style>
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)),
+            url("{{ asset("/backdrops/" ~ serie.backdrop) }}");
+        }
+    </style>
+
     <h1>Détail de la série n°{{ serie.id }}</h1>
 
     <ul>
