@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de la série n°{{ serie.id }}{% endblock %}
+
+{% block body %}
+    <h1>Détail de la série n°{{ serie.id }}</h1>
+
+    <ul>
+        <li>{{ serie.name }}</li>
+        <li>{{ serie.overview }}</li>
+        <li>{{ serie.status }}</li>
+        <li>{{ serie.firstAirDate|date('d/m/Y') }}</li>
+    </ul>
+
+{% endblock %}
