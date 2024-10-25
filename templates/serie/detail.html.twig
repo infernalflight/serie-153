@@ -19,4 +19,5 @@
         <li>{{ serie.firstAirDate|date('d/m/Y') }}</li>
     </ul>
 
+    <a class="btn btn-primary" href="{{ path('serie_update', {'id' : serie.id }) }}">Editer</a>
 {% endblock %}

@@ -72,35 +72,51 @@ class SerieController extends AbstractController
     }
 
     #[Route('/detail/{id}', name: '_detail', requirements: ['id' => '\d+'])]
-    public function detail(SerieRepository $serieRepository, int $id): Response
+    public function detail(Serie $serie): Response
     {
-        $serie = $serieRepository->find($id);
-
-        if (!$serie) {
-            throw $this->createNotFoundException();
-        }
-
         return $this->render('serie/detail.html.twig', [
             'serie' => $serie,
         ]);
     }
 
     #[Route('/create', name: '_create')]
-    public function create(Request $request): Response
+    public function create(Request $request, EntityManagerInterface $em): Response
     {
         $serie = new Serie();
         $form = $this->createForm(SerieType::class, $serie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            dd($serie);
+
+            $em->persist($serie);
+            $em->flush();
+
+            $this->addFlash('success', 'Une nouvelle série a été crée avec succès !');
+            return $this->redirectToRoute('serie_list');
         }
 
 
         return $this->render('serie/edit.html.twig', [
             'form' => $form,
         ]);
+    }
 
+    #[Route('/update/{id}', name: '_update', requirements: ['id' => '\d+'])]
+    public function update(Request $request, EntityManagerInterface $em, Serie $serie): Response
+    {
+        $form = $this->createForm(SerieType::class, $serie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $em->flush();
+
+            $this->addFlash('success', 'La série a été modifiée avec succès !');
+            return $this->redirectToRoute('serie_list');
+        }
+
+        return $this->render('serie/edit.html.twig', [
+            'form' => $form,
+        ]);
     }
 
 

@@ -18,6 +18,9 @@ class SerieType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Nom de la série',
                 'required' => false,
+                'attr' => [
+                    'class' => 'class-special'
+                ]
             ])
             ->add('overview')
             ->add('status', ChoiceType::class, [
@@ -33,19 +36,13 @@ class SerieType extends AbstractType
             ->add('popularity')
             ->add('genres')
             ->add('backdrop')
-            ->add('tmdbId')
-            ->add('dateCreated', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('dateModified', null, [
-                'widget' => 'single_text',
-            ])
             ->add('poster')
             ->add('firstAirDate', null, [
-                'widget' => 'choice',
+                'widget' => 'single_text',
             ])
             ->add('lastAirDate', null, [
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'OK'
