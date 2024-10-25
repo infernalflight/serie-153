@@ -5,9 +5,13 @@ namespace App\Entity;
 use App\Repository\SerieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\UniqueConstraint(columns: ['name', 'first_air_date'])]
+#[UniqueEntity(fields: ['name', 'firstAirDate'], message: 'Une série avec ce nom et cette date existe déja!')]
 class Serie
 {
     #[ORM\Id]
@@ -16,6 +20,8 @@ class Serie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 1, max: 100, minMessage: 'Ce message est trop court ! Il doit faire au moins {{ limit }} caractères.')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -49,9 +55,11 @@ class Serie
     private ?string $poster = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\LessThan('today')]
     private ?\DateTimeInterface $firstAirDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\GreaterThan(propertyPath: 'firstAirDate')]
     private ?\DateTimeInterface $lastAirDate = null;
 
     public function getId(): ?int

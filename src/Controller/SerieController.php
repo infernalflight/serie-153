@@ -34,8 +34,6 @@ class SerieController extends AbstractController
     public function list(SerieRepository $serieRepository, ?string $status = null): Response
     {
 
-
-
         // Requete hérité "findAll()"
 //      $series = $serieRepository->findAll();
 
@@ -86,8 +84,7 @@ class SerieController extends AbstractController
         $form = $this->createForm(SerieType::class, $serie);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($serie);
             $em->flush();
 
