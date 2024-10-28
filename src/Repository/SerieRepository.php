@@ -61,6 +61,26 @@ class SerieRepository extends ServiceEntityRepository
     }
 
 
+    public function getSerieWithSeasons(int $id): array
+    {
+        return $this->createQueryBuilder('s')
+            ->addSelect('u')
+            ->leftJoin('s.seasons', 'u')
+            ->andWhere('s.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllSeriesWithSeasons(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->addSelect('u')
+            ->leftJoin('s.seasons', 'u')
+            ->getQuery()
+            ->getResult();
+    }
+
 
     //    /**
     //     * @return Serie[] Returns an array of Serie objects

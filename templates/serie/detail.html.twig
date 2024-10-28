@@ -19,5 +19,12 @@
         <li>{{ serie.firstAirDate|date('d/m/Y') }}</li>
     </ul>
 
+    <h2>Saisons</h2>
+    <ul>
+    {% for season in serie.seasons %}
+        <li>{{ season.number }} : {{ season.overview }}</li>
+    {% endfor %}
+    </ul>
     <a class="btn btn-primary" href="{{ path('serie_update', {'id' : serie.id }) }}">Editer</a>
+    <a class="btn btn-danger" href="{{ path('serie_delete', {'id' : serie.id, 'token' : csrf_token('delete'~serie.id) }) }}" onclick="return confirm('Etes vous sûrs ??');">Editer</a>
 {% endblock %}

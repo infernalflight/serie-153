@@ -56,7 +56,9 @@ class SerieController extends AbstractController
 **/
 
         // Requête custom avec paramètres de critères
-        $series = $serieRepository->findSeriesByGenre('Drama', $status);
+        //$series = $serieRepository->findSeriesByGenre('Drama', $status);
+
+        $series = $serieRepository->getAllSeriesWithSeasons();
 
         // Requête custom avec paramètres de critères en DQL
        // $series = $serieRepository->findSeriesByGenreWithDql('Drama', $status);
@@ -72,6 +74,7 @@ class SerieController extends AbstractController
     #[Route('/detail/{id}', name: '_detail', requirements: ['id' => '\d+'])]
     public function detail(Serie $serie): Response
     {
+
         return $this->render('serie/detail.html.twig', [
             'serie' => $serie,
         ]);
@@ -114,6 +117,21 @@ class SerieController extends AbstractController
         return $this->render('serie/edit.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route('/delete/{id}', name: '_delete', requirements: ['id' => '\d+'])]
+    public function delete(Serie $serie, EntityManagerInterface $em, Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$serie->getId(), $request->get('token'))) {
+            $em->remove($serie);
+            $em->flush();
+
+            $this->addFlash('success', 'Une série a été supprimée');
+        } else {
+            $this->addFlash('danger', 'Pas possible de supprimer! ');
+        }
+        return $this->redirectToRoute('serie_list');
+
     }
 
 
