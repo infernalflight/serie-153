@@ -21,7 +21,7 @@ class Serie
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Length(min: 1, max: 100, minMessage: 'Ce message est trop court ! Il doit faire au moins {{ limit }} caractères.')]
+    #[Assert\Length(min: 3, max: 100, minMessage: 'Ce message est trop court ! Il doit faire au moins {{ limit }} caractères.')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -206,7 +206,7 @@ class Serie
         return $this->firstAirDate;
     }
 
-    public function setFirstAirDate(\DateTimeInterface $firstAirDate): static
+    public function setFirstAirDate(?\DateTimeInterface $firstAirDate): static
     {
         $this->firstAirDate = $firstAirDate;
 

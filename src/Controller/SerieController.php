@@ -104,7 +104,7 @@ class SerieController extends AbstractController
         $form = $this->createForm(SerieType::class, $serie);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
             $this->addFlash('success', 'La série a été modifiée avec succès !');
