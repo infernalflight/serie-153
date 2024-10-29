@@ -22,6 +22,7 @@
                         {% endif %}
                         <li style="padding: 5px;"><a href="{{ path('app_logout') }}">Déconnexion</a></li>
                     {% else %}
+                        <li style="padding: 5px;"><a href="{{ path('app_register') }}">S'inscrire</a></li>
                         <li style="padding: 5px;"><a href="{{ path('app_login') }}">Connexion</a></li>
                     {% endif %}
                 </ul>
