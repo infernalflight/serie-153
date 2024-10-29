@@ -11,8 +11,10 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/serie', name: 'serie')]
+#[IsGranted('ROLE_USER')]
 class SerieController extends AbstractController
 {
     #[Route('/test', name: '_test')]
@@ -104,6 +106,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/create', name: '_create')]
+    #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
         $serie = new Serie();
@@ -143,6 +146,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: '_delete', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Serie $serie, EntityManagerInterface $em, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete'.$serie->getId(), $request->get('token'))) {

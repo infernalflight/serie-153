@@ -16,7 +16,9 @@
             <nav>
                 <ul>
                     <li style="padding: 5px;"><a href="{{ path('serie_list') }}">Séries</a></li>
-                    <li style="padding: 5px;"><a href="{{ path('serie_create') }}">Nouvelle Série</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li style="padding: 5px;"><a href="{{ path('serie_create') }}">Nouvelle Série</a></li>
+                    {% endif %}
                 </ul>
             </nav>
 
