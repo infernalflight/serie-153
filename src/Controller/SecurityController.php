@@ -25,9 +25,9 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/', name: 'home')]
-    public function redirectToHome(): Response
+    public function home(): Response
     {
-        return $this->redirectToRoute('serie_catalogue');
+        return $this->render('home.html.twig');
     }
 
     #[Route(path: '/logout', name: 'app_logout')]
