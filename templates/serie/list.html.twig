@@ -4,6 +4,16 @@
 
 {% block body %}
     <section>
+    {% if nbTotal is defined %}
+        {% if page > 1  %}
+            <a href="{{ path('serie_catalogue', {'page' : page - 1}) }}">Page précédente</a>
+        {% endif %}
+        {%  if page < nbTotal %}
+            <a href="{{ path('serie_catalogue', {'page' : page + 1}) }}">Page suivante</a>
+        {% endif %}
+    {% endif %}
+    </section>
+    <section>
         {% for serie in series %}
             <a href="{{ path('serie_detail', {'id': serie.id}) }}">
                 <img src="{{ asset('posters/series/' ~ serie.poster) }}" width="300px" loading="lazy" alt="{{ serie.name }}"/>

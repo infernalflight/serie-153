@@ -7,6 +7,7 @@ use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -70,6 +71,28 @@ class SerieController extends AbstractController
             'series' => $series
         ]);
     }
+
+    #[Route('/catalogue/{page}', name:'_catalogue', requirements: ['page' => '\d+'], defaults: ['page' => 1])]
+    public function listByPage(int $page, SerieRepository $serieRepository, ParameterBagInterface $parameterBag): Response
+    {
+
+        $nbSeries = $parameterBag->get('nb_series_by_page');
+        $offset = ($page - 1) * $nbSeries;
+
+        $series = $serieRepository->findBy([], ['vote' => 'DESC'], $nbSeries, $offset,  );
+        $total = $serieRepository->count();
+
+        $nbTotalPages = ceil($total / $nbSeries);
+
+        return $this->render('serie/list.html.twig', [
+            'series' => $series,
+            'nbTotal' => $nbTotalPages,
+            'page' => $page
+        ]);
+
+    }
+
+
 
     #[Route('/detail/{id}', name: '_detail', requirements: ['id' => '\d+'])]
     public function detail(Serie $serie): Response
