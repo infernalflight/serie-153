@@ -4,20 +4,28 @@ namespace App\Controller;
 
 use App\Entity\Season;
 use App\Form\SeasonType;
+use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/season', name: 'app_season')]
+#[Route('/season', name: 'season')]
 class SeasonController extends AbstractController
 {
 
-    #[Route('/create', name: 'app_season')]
-    public function create(Request $request, EntityManagerInterface $em): Response
+    #[Route('/create', name: '_create')]
+    public function create(Request $request, EntityManagerInterface $em, SerieRepository $serieRepository): Response
     {
         $season = new Season();
+
+        $idSerie = $request->get('idSerie');
+
+        if ($idSerie) {
+            $serie = $serieRepository->find($idSerie);
+            $season->setSerie($serie);
+        }
 
         $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
@@ -33,6 +41,7 @@ class SeasonController extends AbstractController
 
         return $this->render('season/edit.html.twig', [
             'form' => $form,
+            'idSerie' => $idSerie ?? null,
         ]);
     }
 }

@@ -6,6 +6,11 @@
 
 {% block body %}
     <div class="row justify-content-center">
+        {% if idSerie is not empty %}
+            {{ render(controller(
+                'App\\Controller\\SerieController::detail', {id : idSerie, partial: true}
+            )) }}
+        {% endif %}
         <div class="col-12 col-xl-6">
             {{ form(form) }}
         </div>

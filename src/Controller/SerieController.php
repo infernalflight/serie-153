@@ -78,6 +78,10 @@ class SerieController extends AbstractController
     public function listByPage(int $page, SerieRepository $serieRepository, ParameterBagInterface $parameterBag): Response
     {
 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $this->getUser()->getRoles();
+
         $nbSeries = $parameterBag->get('nb_series_by_page');
         $offset = ($page - 1) * $nbSeries;
 
@@ -97,8 +101,14 @@ class SerieController extends AbstractController
 
 
     #[Route('/detail/{id}', name: '_detail', requirements: ['id' => '\d+'])]
-    public function detail(Serie $serie): Response
+    public function detail(Serie $serie, Request $request): Response
     {
+
+     if ($request->get('partial')) {
+         return $this->render('serie/_detail_content.html.twig', [
+             'serie' => $serie,
+         ]);
+     }
 
         return $this->render('serie/detail.html.twig', [
             'serie' => $serie,
