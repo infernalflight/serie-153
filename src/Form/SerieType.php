@@ -5,10 +5,12 @@ namespace App\Form;
 use App\Entity\Serie;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class SerieType extends AbstractType
 {
@@ -36,7 +38,23 @@ class SerieType extends AbstractType
             ->add('popularity')
             ->add('genres')
             ->add('backdrop')
-            ->add('poster')
+            ->add('poster_file', FileType::class, [
+                'mapped' => false,
+                'label' => 'Fichier poster',
+                'required' => false,
+                'constraints' => [
+                    New File([
+                       'maxSize'=> '1024k',
+                       'maxSizeMessage' => 'Ton image est trop lourde. Max : 1Mo',
+                       'mimeTypes' => [
+                           'image/jpeg',
+                           'image/jpg',
+                           'image/png',
+                       ],
+                        'mimeTypesMessage'  => 'Le format n\'est pas pris en charge',
+                    ]),
+                ]
+            ])
             ->add('firstAirDate', null, [
                 'widget' => 'single_text',
             ])

@@ -4,14 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Serie;
 use App\Form\SerieType;
+use App\Helper\FileUploader;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/serie', name: 'serie')]
 #[IsGranted('ROLE_USER')]
@@ -117,13 +120,20 @@ class SerieController extends AbstractController
 
     #[Route('/create', name: '_create')]
     #[IsGranted('ROLE_ADMIN')]
-    public function create(Request $request, EntityManagerInterface $em): Response
+    public function create(Request $request, EntityManagerInterface $em, FileUploader $fileUploader): Response
     {
         $serie = new Serie();
         $form = $this->createForm(SerieType::class, $serie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('poster_file')->getData();
+
+            if ($file instanceof UploadedFile) {
+                $name = $fileUploader->upload($file, $serie->getName());
+                $serie->setPoster($name);
+            }
+
             $em->persist($serie);
             $em->flush();
 
@@ -138,12 +148,18 @@ class SerieController extends AbstractController
     }
 
     #[Route('/update/{id}', name: '_update', requirements: ['id' => '\d+'])]
-    public function update(Request $request, EntityManagerInterface $em, Serie $serie): Response
+    public function update(Request $request, EntityManagerInterface $em, Serie $serie, FileUploader $fileUploader): Response
     {
         $form = $this->createForm(SerieType::class, $serie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('poster_file')->getData();
+
+            if ($file instanceof UploadedFile) {
+                $name = $fileUploader->upload($file, $serie->getName());
+                $serie->setPoster($name);
+            }
             $em->flush();
 
             $this->addFlash('success', 'La série a été modifiée avec succès !');
