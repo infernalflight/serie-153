@@ -2,18 +2,27 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\SerieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint(columns: ['name', 'first_air_date'])]
 #[UniqueEntity(fields: ['name', 'firstAirDate'], message: 'Une série avec ce nom et cette date existe déja!')]
+#[ApiResource(
+    security: "is_granted('ROLE_ADMIN')"
+)]
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact', 'name' => 'partial'])]
 class Serie
 {
     #[ORM\Id]
@@ -24,15 +33,19 @@ class Serie
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 100, minMessage: 'Ce message est trop court ! Il doit faire au moins {{ limit }} caractères.')]
+    #[Groups('serie_list')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('serie_list')]
     private ?string $overview = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('serie_list')]
     private ?string $status = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('serie_list')]
     private ?float $vote = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
